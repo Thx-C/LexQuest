@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LexQuest — Protection du Site Web</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@300;400&display=swap');
+
+:root {
+  --bg:       #0c0c0c;
+  --bg2:      #111111;
+  --bg3:      #161616;
+  --card:     #141414;
+  --card2:    #1a1a1a;
+  --border:   rgba(212,175,55,0.12);
+  --border2:  rgba(212,175,55,0.28);
+  --gold:     #d4af37;
+  --gold2:    #f0d060;
+  --gold3:    #a07820;
+  --cream:    #f5f0e8;
+  --text:     #e8e4dc;
+  --muted:    #8a8070;
+  --dim:      #504840;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+@keyframes fadeDown  { from { opacity:0; transform:translateY(-16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeUp    { from { opacity:0; transform:translateY(20px);  } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeIn    { from { opacity:0; } to { opacity:1; } }
+@keyframes popIn     { from { opacity:0; transform:scale(.88); } to { opacity:1; transform:scale(1); } }
+@keyframes shake     { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+@keyframes goldGlow  { 0%,100%{ box-shadow:0 0 16px rgba(212,175,55,.25); } 50%{ box-shadow:0 0 36px rgba(212,175,55,.5); } }
+@keyframes floatY    { 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+@keyframes xpFly     { 0%{ opacity:1; transform:translateY(0) scale(1); } 100%{ opacity:0; transform:translateY(-50px) scale(1.2); } }
+@keyframes confetti  { 0%{ transform:translateY(-10px) rotate(0deg); opacity:1; } 100%{ transform:translateY(120px) rotate(540deg); opacity:0; } }
+@keyframes shimmer   { 0%{ background-position:-200% center; } 100%{ background-position:200% center; } }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 80px 24px; position: relative; overflow: hidden;
+  background: #080808;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(212,175,55,.08) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(160,120,32,.05) 0%, transparent 60%);
+}
+.hero::after {
+  content: '';
+  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+  width: 1px; height: 80px;
+  background: linear-gradient(to bottom, rgba(212,175,55,.6), transparent);
+}
+.hero-badge {
+  position: relative; z-index: 2;
+  display: inline-flex; align-items: center; gap: 10px;
+  border: 1px solid rgba(212,175,55,.3);
+  border-radius: 2px;
+  padding: 8px 20px;
+  font-family: 'Inter', sans-serif; font-size: .65rem; font-weight: 500;
+  letter-spacing: .25em; color: var(--gold); text-transform: uppercase;
+  margin-bottom: 40px; animation: fadeDown .7s ease both;
+  background: rgba(212,175,55,.04);
+}
+.hero-badge span { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); opacity: .8; }
+.hero h1 {
+  position: relative; z-index: 2;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3.5rem, 9vw, 7.5rem);
+  font-weight: 300; font-style: italic;
+  line-height: .95; color: var(--cream);
+  margin-bottom: 6px;
+  animation: fadeUp .8s .15s both;
+  letter-spacing: -.01em;
+}
+.hero h1 em { font-style: normal; color: var(--gold); font-weight: 600; }
+.hero-sub-title {
+  position: relative; z-index: 2;
+  font-family: 'Inter', sans-serif; font-size: .8rem; font-weight: 400;
+  letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+  margin-bottom: 48px; animation: fadeUp .8s .3s both;
+}
+.hero-rule {
+  position: relative; z-index: 2;
+  width: 60px; height: 1px; background: var(--gold); margin: 0 auto 32px;
+  animation: fadeUp .8s .25s both;
+}
+.hero-pills {
+  position: relative; z-index: 2;
+  display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;
+  margin-bottom: 32px; animation: fadeUp .8s .4s both;
+}
+.stat-pill {
+  display: flex; align-items: center; gap: 7px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 7px 16px;
+  font-family: 'JetBrains Mono', monospace; font-size: .7rem; font-weight: 400;
+  white-space: nowrap; background: rgba(212,175,55,.03);
+}
+.sp-neon   { color: var(--gold);  border-color: rgba(212,175,55,.25); }
+.sp-orange { color: #c8986a;       border-color: rgba(200,152,106,.2); }
+.sp-yellow { color: var(--gold2);  border-color: rgba(240,208,96,.2); }
+.xp-wrap { position: relative; z-index: 2; width: 100%; max-width: 340px; margin: 0 auto 10px; }
+.xp-track { background: rgba(212,175,55,.06); height: 1px; overflow: visible; position: relative; }
+.xp-fill  {
+  height: 1px; width: 0%; position: absolute; top: 0; left: 0;
+  background: var(--gold); transition: width 1s cubic-bezier(.4,0,.2,1);
+  box-shadow: 0 0 8px rgba(212,175,55,.6);
+}
+.xp-label { font-family: 'JetBrains Mono', monospace; font-size: .63rem; color: var(--dim); text-align: center; margin-top: 8px; animation: fadeUp .8s .5s both; }
+.xp-label b { color: var(--gold); }
+
+/* ── HUD ── */
+.hud {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,8,8,.97); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border2);
+  padding: 10px 28px;
+  display: flex; align-items: center; gap: 16px; overflow-x: auto;
+}
+.hud-logo {
+  font-family: 'Cormorant Garamond', serif; font-style: italic;
+  font-weight: 600; font-size: 1.1rem; color: var(--gold);
+  white-space: nowrap; flex-shrink: 0; letter-spacing: .02em;
+}
+.hud-stats { display: flex; gap: 8px; flex-shrink: 0; }
+.hud-sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+.hud-nav { display: flex; gap: 0; flex: 1; overflow-x: auto; }
+.hud-nav a {
+  font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 500;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  padding: 6px 12px; white-space: nowrap; transition: color .2s;
+  border-bottom: 1px solid transparent;
+}
+.hud-nav a:hover { color: var(--gold); border-bottom-color: rgba(212,175,55,.4); }
+
+/* ── MAIN ── */
+main { max-width: 1060px; margin: 0 auto; padding: 0 28px 100px; }
+
+/* ── SECTION ── */
+.section { margin-top: 80px; opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
+.section.visible { opacity: 1; transform: translateY(0); }
+.sh { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
+.si {
+  width: 40px; height: 40px; border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+  background: rgba(212,175,55,.06); border: 1px solid var(--border);
+}
+.si-blue,.si-green,.si-yellow,.si-red,.si-purple,.si-orange { background: rgba(212,175,55,.06); border: 1px solid var(--border); }
+.st { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.4rem,3vw,2rem); font-weight: 600; color: var(--cream); letter-spacing: .01em; }
+.st span { font-family: 'JetBrains Mono', monospace; font-size: .55em; font-weight: 300; color: var(--gold); margin-right: 8px; opacity: .7; }
+.st small { font-family: 'JetBrains Mono', monospace; font-size: .48em; color: var(--gold); vertical-align: middle; margin-left: 8px; }
+.section-rule { width: 100%; height: 1px; background: linear-gradient(to right, var(--border2), transparent); margin-bottom: 24px; }
+
+/* ── CARDS ── */
+.cg  { display: grid; gap: 16px; }
+.cg2 { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+.cg3 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.cg4 { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+
+.card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 2px; padding: 24px;
+  transition: border-color .25s, box-shadow .25s;
+  position: relative; overflow: hidden;
+}
+.card::before { content: ''; position: absolute; top: 0; left: 0; width: 2px; height: 0; background: var(--gold); transition: height .3s ease; }
+.card:hover { border-color: var(--border2); box-shadow: 0 8px 40px rgba(0,0,0,.5); }
+.card:hover::before { height: 100%; }
+.card h3 {
+  font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600;
+  color: var(--cream); margin-bottom: 12px; letter-spacing: .01em;
+}
+.card ul { list-style: none; }
+.card ul li { font-size: .82rem; color: var(--muted); padding: 4px 0 4px 14px; position: relative; line-height: 1.5; }
+.card ul li::before { content: '—'; position: absolute; left: 0; color: var(--gold3); font-size: .7rem; }
+.hl  { color: var(--gold2) !important; font-weight: 500; }
+.hl2 { color: #e07070 !important; font-weight: 500; }
+
+/* ── INFO BOX ── */
+.ib { background: rgba(212,175,55,.04); border: 1px solid var(--border); border-left: 2px solid var(--gold); border-radius: 2px; padding: 18px 22px; margin: 16px 0; }
+.ib-lbl { font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--gold); margin-bottom: 6px; }
+.ib p { font-size: .85rem; color: rgba(232,228,220,.75); line-height: 1.75; }
+
+/* ── STAT CARDS ── */
+.scard {
+  background: var(--card); border: 1px solid var(--border); border-radius: 2px;
+  padding: 28px; text-align: center; transition: border-color .25s;
+  animation: floatY 4s ease-in-out infinite;
+  position: relative; overflow: hidden;
+}
+.scard::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); opacity: 0; transition: opacity .3s; }
+.scard:hover { border-color: var(--border2); animation: none; }
+.scard:hover::after { opacity: 1; }
+.scard:nth-child(2){animation-delay:.8s;} .scard:nth-child(3){animation-delay:1.6s;} .scard:nth-child(4){animation-delay:2.4s;}
+.sbig { font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; font-weight: 300; line-height: 1; margin-bottom: 8px; color: var(--gold); }
+.sbig.n,.sbig.r,.sbig.b { color: var(--gold); }
+.sbig.y { color: var(--gold2); }
+.slbl { font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 600; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.sdesc { font-size: .78rem; color: var(--dim); line-height: 1.5; }
+
+/* ── TIMELINE ── */
+.tl { position: relative; padding-left: 28px; }
+.tl::before { content: ''; position: absolute; left: 6px; top: 0; bottom: 0; width: 1px; background: linear-gradient(to bottom, var(--gold), rgba(212,175,55,.1)); }
+.ti { position: relative; margin-bottom: 14px; background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 16px 20px; transition: border-color .2s; }
+.ti:hover { border-color: var(--border2); }
+.ti::before { content: ''; position: absolute; left: -25px; top: 20px; width: 8px; height: 8px; border-radius: 50%; background: var(--gold3); border: 1px solid var(--gold); }
+.td { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--gold3); margin-bottom: 5px; letter-spacing: .06em; }
+.ti h4 { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; color: var(--cream); margin-bottom: 4px; }
+.ti p { font-size: .82rem; color: var(--muted); line-height: 1.6; }
+
+/* ── TABLE ── */
+.twrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 2px; }
+table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+thead tr { background: rgba(212,175,55,.06); border-bottom: 1px solid var(--border2); }
+th { font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 600; letter-spacing: .15em; text-transform: uppercase; color: var(--gold); padding: 12px 14px; text-align: left; }
+td { padding: 11px 14px; border-top: 1px solid var(--border); color: rgba(232,228,220,.75); vertical-align: top; font-size: .8rem; }
+tbody tr { background: var(--card); transition: background .15s; }
+tbody tr:nth-child(even) { background: var(--bg3); }
+tbody tr:hover td { background: rgba(212,175,55,.03); }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 2px; font-family: 'JetBrains Mono', monospace; font-size: .6rem; letter-spacing: .06em; font-weight: 400; }
+.br { background: rgba(200,80,80,.1); color: #d08080; border: 1px solid rgba(200,80,80,.25); }
+.bo { background: rgba(200,140,60,.1); color: #c89060; border: 1px solid rgba(200,140,60,.25); }
+.bb { background: rgba(212,175,55,.1); color: var(--gold3); border: 1px solid var(--border); }
+
+/* ── CHECKLIST ── */
+.cl { display: grid; gap: 8px; }
+.ci { display: flex; gap: 12px; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-radius: 2px; padding: 12px 16px; font-size: .82rem; color: var(--muted); line-height: 1.5; transition: border-color .2s; }
+.ci:hover { border-color: var(--border2); }
+.cd { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .6rem; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+.dok  { background: rgba(80,160,100,.12); color: #70c080; border: 1px solid rgba(80,160,100,.3); }
+.dwn  { background: rgba(212,175,55,.1);  color: var(--gold3); border: 1px solid var(--border); }
+.dreq { background: rgba(200,80,80,.1);   color: #c08080; border: 1px solid rgba(200,80,80,.25); }
+
+/* ── GLOSSAIRE ── */
+.gg { display: grid; gap: 1px; border: 1px solid var(--border); border-radius: 2px; overflow: hidden; }
+.gi { background: var(--card); cursor: pointer; transition: background .15s; border-bottom: 1px solid var(--border); }
+.gi:last-child { border-bottom: none; }
+.gi:hover { background: var(--card2); }
+.gi.open { background: var(--card2); }
+.ghead { display: flex; justify-content: space-between; align-items: center; padding: 14px 20px; }
+.gterm { font-family: 'Cormorant Garamond', serif; font-size: .95rem; font-weight: 600; color: var(--cream); letter-spacing: .01em; }
+.garrow { color: var(--gold3); transition: transform .25s; font-size: .8rem; }
+.gi.open .garrow { transform: rotate(90deg); }
+.gbody { display: none; padding: 0 20px 14px; font-size: .82rem; color: var(--muted); line-height: 1.7; border-top: 1px solid var(--border); padding-top: 12px; }
+.gi.open .gbody { display: block; }
+
+/* ═══════════════════════════════
+   FLASHCARDS
+═══════════════════════════════ */
+.fc-arena {
+  background: var(--card); border: 1px solid var(--border2);
+  border-radius: 2px; padding: 32px; max-width: 680px; margin: 0 auto;
+}
+.fc-topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.fc-count { font-family: 'JetBrains Mono', monospace; font-size: .68rem; color: var(--muted); letter-spacing: .06em; }
+.fc-count b { color: var(--gold); font-weight: 400; }
+.fc-mastered-badge { font-family: 'JetBrains Mono', monospace; font-size: .62rem; color: var(--gold3); background: rgba(212,175,55,.06); border: 1px solid var(--border); border-radius: 2px; padding: 4px 10px; }
+
+.fc-persp { perspective: 1200px; margin-bottom: 20px; }
+.fc-card-wrap { width: 100%; height: 200px; position: relative; cursor: pointer; user-select: none; }
+.fc-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.4,0,.2,1); }
+.fc-inner.flipped { transform: rotateY(180deg); }
+.fc-face { position: absolute; inset: 0; border-radius: 2px; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; padding: 28px 32px; }
+.fc-front { background: #0e0e0e; border: 1px solid var(--border2); }
+.fc-back  { background: #0a0a0a; border: 1px solid rgba(212,175,55,.2); transform: rotateY(180deg); }
+.fc-tag {
+  font-family: 'Inter', sans-serif; font-size: .58rem; font-weight: 600;
+  letter-spacing: .2em; text-transform: uppercase;
+  color: var(--gold3); margin-bottom: 14px; display: block;
+}
+.fc-tag.back { color: rgba(212,175,55,.5); }
+.fc-q { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 600; color: var(--cream); line-height: 1.4; }
+.fc-hint { margin-top: 14px; font-size: .65rem; color: rgba(255,255,255,.12); font-family: 'JetBrains Mono', monospace; letter-spacing: .08em; }
+.fc-ans { font-size: .84rem; color: rgba(232,228,220,.85); line-height: 1.65; margin-bottom: 10px; }
+.fc-ref { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--gold3); opacity: .6; letter-spacing: .04em; }
+
+.fc-rating { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+.fcbtn {
+  flex: 1; padding: 10px 8px; border-radius: 2px;
+  font-family: 'Inter', sans-serif; font-size: .75rem; font-weight: 500;
+  cursor: pointer; transition: all .18s;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  letter-spacing: .04em;
+}
+.fcbtn:hover { transform: translateY(-1px); }
+.fcbtn.again   { background: rgba(200,80,80,.08); color: #c09090; border: 1px solid rgba(200,80,80,.2); }
+.fcbtn.again:hover { background: rgba(200,80,80,.14); }
+.fcbtn.good    { background: rgba(212,175,55,.07); color: var(--gold3); border: 1px solid var(--border); }
+.fcbtn.good:hover { background: rgba(212,175,55,.12); }
+.fcbtn.perfect { background: rgba(212,175,55,.12); color: var(--gold); border: 1px solid var(--border2); }
+.fcbtn.perfect:hover { background: rgba(212,175,55,.2); }
+
+.fc-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; }
+.nbtn {
+  background: transparent; border: 1px solid var(--border); border-radius: 2px;
+  color: var(--muted); font-size: .75rem; padding: 6px 14px;
+  cursor: pointer; transition: all .18s; font-family: 'Inter', sans-serif; font-weight: 500;
+  letter-spacing: .08em;
+}
+.nbtn:hover { border-color: var(--border2); color: var(--gold); }
+.fc-dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; max-width: 260px; }
+.mdot { width: 6px; height: 6px; border-radius: 50%; background: rgba(212,175,55,.12); cursor: pointer; transition: all .2s; border: none; }
+.mdot.curr { background: var(--gold); box-shadow: 0 0 6px rgba(212,175,55,.5); }
+.mdot.ok2  { background: var(--gold3); opacity: .6; }
+.mdot.ok1  { background: rgba(200,140,60,.5); }
+.mdot.ok0  { background: rgba(160,80,80,.4); }
+.fc-prog { margin-top: 16px; display: flex; align-items: center; gap: 12px; }
+.fc-ptrack { flex: 1; background: rgba(212,175,55,.06); height: 1px; position: relative; }
+.fc-pfill { height: 1px; background: var(--gold); transition: width .4s ease; position: absolute; top: 0; left: 0; box-shadow: 0 0 6px rgba(212,175,55,.4); }
+.fc-ptxt { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--dim); white-space: nowrap; }
+
+/* ═══════════════════════════════
+   QCM
+═══════════════════════════════ */
+.qa { background: var(--card); border: 1px solid var(--border2); border-radius: 2px; padding: 32px; }
+.qcats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.qcat {
+  font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 600;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 2px;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--muted); cursor: pointer; transition: all .18s;
+}
+.qcat:hover { border-color: var(--border2); color: var(--gold3); }
+.qcat.on    { background: rgba(212,175,55,.08); border-color: var(--border2); color: var(--gold); }
+.qprog { background: rgba(212,175,55,.06); height: 1px; margin-bottom: 28px; position: relative; }
+.qpfill { height: 1px; background: var(--gold); transition: width .4s cubic-bezier(.4,0,.2,1); position: absolute; top: 0; left: 0; box-shadow: 0 0 8px rgba(212,175,55,.4); }
+.qblock { display: none; }
+.qblock.on { display: block; animation: fadeIn .3s ease; }
+.qnum { font-family: 'JetBrains Mono', monospace; font-size: .6rem; color: var(--dim); margin-bottom: 8px; letter-spacing: .1em; text-transform: uppercase; }
+.qtext { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 600; color: var(--cream); line-height: 1.45; margin-bottom: 20px; letter-spacing: .01em; }
+.qopts { display: grid; gap: 8px; }
+.qopt {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 2px; padding: 12px 16px;
+  cursor: pointer; font-size: .83rem; color: rgba(232,228,220,.75);
+  text-align: left; font-family: 'Inter', sans-serif; font-weight: 400;
+  transition: all .18s; display: flex; align-items: center; gap: 12px;
+}
+.qopt-letter {
+  width: 24px; height: 24px; border-radius: 2px;
+  background: rgba(212,175,55,.05); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace; font-size: .65rem;
+  color: var(--dim); flex-shrink: 0; transition: all .18s;
+}
+.qopt:hover:not(:disabled) { border-color: var(--border2); background: rgba(212,175,55,.04); color: var(--text); }
+.qopt:hover:not(:disabled) .qopt-letter { background: rgba(212,175,55,.1); color: var(--gold3); border-color: var(--border2); }
+.qopt.correct { border-color: rgba(80,160,100,.5) !important; background: rgba(80,160,100,.07) !important; color: #90c8a0 !important; animation: popIn .3s ease; }
+.qopt.correct .qopt-letter { background: rgba(80,160,100,.12) !important; color: #80c090 !important; border-color: rgba(80,160,100,.4) !important; }
+.qopt.wrong   { border-color: rgba(200,80,80,.4) !important; background: rgba(200,80,80,.06) !important; color: #c09090 !important; animation: shake .35s ease; }
+.qopt.wrong .qopt-letter { background: rgba(200,80,80,.1) !important; color: #c08080 !important; border-color: rgba(200,80,80,.35) !important; }
+.qopt:disabled { cursor: default; }
+.qfb { margin-top: 14px; padding: 12px 16px; border-radius: 2px; font-size: .8rem; line-height: 1.65; display: none; font-family: 'Inter', sans-serif; }
+.qfb.show { display: block; animation: fadeUp .3s ease; }
+.qfb.ok { background: rgba(80,160,100,.05); border: 1px solid rgba(80,160,100,.2); color: rgba(200,230,210,.8); border-left: 2px solid #70b080; }
+.qfb.ko { background: rgba(212,175,55,.04); border: 1px solid var(--border); color: rgba(232,228,220,.7); border-left: 2px solid var(--gold3); }
+.qnav { display: flex; align-items: center; gap: 12px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); }
+.btnext {
+  background: var(--gold); border: none; border-radius: 2px;
+  padding: 10px 24px; font-family: 'Inter', sans-serif; font-size: .75rem;
+  font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: #0c0c0c; cursor: pointer; transition: all .2s;
+}
+.btnext:hover { background: var(--gold2); box-shadow: 0 4px 20px rgba(212,175,55,.3); }
+.btrestart {
+  background: transparent; border: 1px solid var(--border); border-radius: 2px;
+  padding: 10px 18px; font-family: 'Inter', sans-serif; font-size: .75rem;
+  font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; transition: all .2s; display: none;
+}
+.btrestart:hover { border-color: var(--border2); color: var(--gold3); }
+.qscoretxt { font-family: 'JetBrains Mono', monospace; font-size: .65rem; color: var(--dim); margin-left: auto; }
+.result-screen { text-align: center; padding: 40px 16px; display: none; }
+.result-screen.show { display: block; animation: fadeIn .5s ease; }
+.rtrophy { font-size: 3rem; margin-bottom: 16px; animation: floatY 2.5s ease-in-out infinite; }
+.rscore { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; color: var(--cream); margin-bottom: 8px; }
+.rscore b { color: var(--gold); font-weight: 600; }
+.rmsg { font-size: .85rem; color: var(--muted); margin-bottom: 24px; letter-spacing: .02em; }
+.rxp {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(212,175,55,.08); border: 1px solid var(--border2);
+  border-radius: 2px; padding: 10px 24px;
+  font-family: 'JetBrains Mono', monospace; font-size: .75rem; color: var(--gold);
+  animation: goldGlow 2.5s ease-in-out infinite; letter-spacing: .06em;
+}
+
+/* GAMIF POPUPS */
+.xp-popup { position: fixed; pointer-events: none; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.2rem; font-weight: 600; color: var(--gold); text-shadow: 0 0 12px rgba(212,175,55,.5); z-index: 9999; animation: xpFly 1s ease forwards; }
+.confetti-p { position: fixed; width: 6px; height: 6px; border-radius: 1px; pointer-events: none; z-index: 9999; animation: confetti 1.6s ease forwards; }
+
+/* ── FOOTER ── */
+footer {
+  background: #080808; border-top: 1px solid var(--border);
+  text-align: center; padding: 32px;
+  font-family: 'Inter', sans-serif; font-size: .6rem; font-weight: 400;
+  letter-spacing: .15em; text-transform: uppercase;
+  color: var(--dim); margin-top: 80px;
+}
+footer b { color: var(--gold3); }
+
+@media (max-width: 600px) {
+  .hud { padding: 8px 16px; }
+  .fc-arena, .qa { padding: 20px 16px; }
+  .fc-card-wrap { height: 230px; }
+  .fc-face { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge"><span></span> Gamification · Droit du numérique FR</div>
+  <h1><em>Lex</em>Quest</h1>
+  <div class="hero-rule"></div><p class="hero-sub-title">Protection du Site Web &nbsp;·&nbsp; Droit Français</p>
+  <p class="hero-desc">Maîtrisez le cadre juridique en jouant. XP, niveaux, streaks, flashcards et QCM vous attendent.</p>
+  <div class="hero-pills">
+    <div class="stat-pill sp-neon">⚡ <span id="hxp">0</span> XP</div>
+    <div class="stat-pill sp-orange">🔥 Streak <span id="hstreak">0</span></div>
+    <div class="stat-pill sp-yellow">⭐ Niveau <span id="hlevel">1</span></div>
+  </div>
+  <div class="xp-wrap">
+    <div class="xp-track"><div class="xp-fill" id="hbar"></div></div>
+  </div>
+  <p class="xp-label">Progression : <b id="xptxt">0 / 100 XP</b> pour le prochain niveau</p>
+</section>
+
+<!-- HUD -->
+<nav class="hud">
+  <div class="hud-logo"><em>Lex</em>Quest</div>
+  <div class="hud-stats">
+    <div class="stat-pill sp-neon" style="font-size:.65rem;padding:5px 10px;">⚡ <span id="hudxp">0</span></div>
+    <div class="stat-pill sp-orange" style="font-size:.65rem;padding:5px 10px;">🔥 <span id="hudstreak">0</span></div>
+    <div class="stat-pill sp-yellow" style="font-size:.65rem;padding:5px 10px;">⭐ <span id="hudlevel">1</span></div>
+  </div>
+  <div class="hud-nav">
+    <a href="#memo">Chiffres</a>
+    <a href="#droits">Droits auteur</a>
+    <a href="#donnees">RGPD</a>
+    <a href="#mentions">Mentions</a>
+    <a href="#responsabilite">Responsabilité</a>
+    <a href="#cybersecu">Cyber</a>
+    <a href="#sanctions">Sanctions</a>
+    <a href="#ecommerce">E-Commerce</a>
+    <a href="#marques">Marques</a>
+    <a href="#flashcards">⚡ Flashcards</a>
+    <a href="#quiz">🎯 QCM</a>
+    <a href="#glossaire">Glossaire</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- CHIFFRES CLÉS -->
+<section class="section" id="memo">
+  <div class="sh"><div class="si si-yellow">⚡</div><h2 class="st"><span>00.</span>Chiffres essentiels</h2></div>
+  <div class="cg cg4">
+    <div class="scard"><div class="slbl">Délai RGPD</div><div class="sbig n">72h</div><div class="sdesc">Notification violation à la CNIL — Art. 33</div></div>
+    <div class="scard"><div class="slbl">Amende max. RGPD</div><div class="sbig r">20M€</div><div class="sdesc">Ou 4% CA mondial — Art. 83 §5</div></div>
+    <div class="scard"><div class="slbl">Durée droit d'auteur</div><div class="sbig b">70 ans</div><div class="sdesc">Post mortem auctoris — CPI L.123-1</div></div>
+    <div class="scard"><div class="slbl">Cookies — consentement</div><div class="sbig y">13 mois</div><div class="sdesc">Durée max. validité — CNIL 2023</div></div>
+  </div>
+</section>
+
+<!-- DROITS D'AUTEUR -->
+<section class="section" id="droits">
+  <div class="sh"><div class="si si-blue">📝</div><h2 class="st"><span>01.</span>Droits d'Auteur</h2></div>
+  <div class="ib"><div class="ib-lbl">🏛 CPI — Art. L.111-1</div><p>Protection de toute œuvre de l'esprit originale, <b style="color:var(--neon)">dès la création, sans formalité</b> d'enregistrement.</p></div>
+  <div class="cg cg2">
+    <div class="card g"><h3>✅ Éléments protégeables</h3><ul><li>Textes, articles, contenus éditoriaux</li><li>Photos & illustrations originales</li><li>Code source (assimilé logiciel)</li><li>Interface graphique originale (UI)</li><li>Vidéos, podcasts, créations sonores</li><li>Bases de données (droit sui generis)</li></ul></div>
+    <div class="card r"><h3>❌ Non protégeables</h3><ul><li>Idées, concepts, méthodes</li><li>Titres non originaux</li><li>Données brutes et faits</li><li>URLs et noms de domaine</li><li>Œuvres du domaine public</li></ul></div>
+    <div class="card b"><h3>🔒 Droits moraux (inaliénables)</h3><ul><li>Divulgation</li><li>Paternité (mention du nom)</li><li>Intégrité de l'œuvre</li><li>Retrait ou repentir</li><li class="hl">→ Perpétuels, imprescriptibles</li></ul></div>
+    <div class="card y"><h3>💰 Droits patrimoniaux (cessibles)</h3><ul><li>Reproduction</li><li>Représentation / mise en ligne</li><li>Traduction & adaptation</li><li class="hl">Durée : vie + 70 ans</li></ul></div>
+  </div>
+</section>
+
+<!-- RGPD -->
+<section class="section" id="donnees">
+  <div class="sh"><div class="si si-green">🔐</div><h2 class="st"><span>02.</span>RGPD — Données Personnelles</h2></div>
+  <div class="ib"><div class="ib-lbl">🇪🇺 Règlement (UE) 2016/679</div><p>Applicable depuis le 25 mai 2018. Complété par la Loi Informatique et Libertés. Autorité de contrôle FR : <b style="color:var(--neon)">CNIL</b>.</p></div>
+  <div class="cg cg3">
+    <div class="card g"><h3>🎯 6 Principes</h3><ul><li>Licéité, loyauté, transparence</li><li>Limitation des finalités</li><li>Minimisation</li><li>Exactitude</li><li>Limitation de conservation</li><li>Intégrité & confidentialité</li></ul></div>
+    <div class="card b"><h3>🔑 6 Bases légales</h3><ul><li>Consentement explicite</li><li>Exécution d'un contrat</li><li>Obligation légale</li><li>Intérêts vitaux</li><li>Mission d'intérêt public</li><li>Intérêt légitime</li></ul></div>
+    <div class="card p"><h3>👤 Droits des personnes</h3><ul><li>Accès (art. 15)</li><li>Rectification (art. 16)</li><li>Effacement (art. 17)</li><li>Portabilité (art. 20)</li><li>Opposition (art. 21)</li><li>Limitation (art. 18)</li></ul></div>
+  </div>
+  <div class="cg cg2" style="margin-top:12px;">
+    <div class="card g"><h3>🍪 Cookies</h3><ul><li>Consentement requis pour cookies non essentiels</li><li>Bandeau conforme CNIL obligatoire</li><li class="hl">Durée max. consentement : 13 mois</li><li>Retrait aussi simple que l'octroi</li></ul></div>
+    <div class="card r"><h3>⚠️ Obligations responsable</h3><ul><li>Registre des traitements</li><li>Désigner un DPO si requis</li><li>Réaliser des DPIA (art. 35)</li><li class="hl2">Notifier violations CNIL sous 72h</li><li>Privacy by design & by default</li></ul></div>
+  </div>
+</section>
+
+<!-- MENTIONS LÉGALES -->
+<section class="section" id="mentions">
+  <div class="sh"><div class="si si-yellow">📋</div><h2 class="st"><span>03.</span>Mentions Légales &amp; CGU</h2></div>
+  <div class="ib"><div class="ib-lbl">⚖️ LCEN Art. 6 III</div><p>Obligatoires pour tout site public. Sanction : <b style="color:var(--red)">75 000 €</b> (375 000 € personne morale).</p></div>
+  <div class="cg cg2">
+    <div class="card b"><h3>🏢 Personne morale</h3><ul><li>Dénomination sociale & forme juridique</li><li>Siège social + RCS/SIRET</li><li>Capital social & TVA</li><li>Directeur de la publication</li><li>Coordonnées hébergeur</li></ul></div>
+    <div class="card g"><h3>🔒 Politique de confidentialité</h3><ul><li>Identité du responsable de traitement</li><li>Finalités et bases légales</li><li>Destinataires & durées de conservation</li><li>Droits des personnes & DPO</li><li>Droit de réclamation à la CNIL</li></ul></div>
+  </div>
+</section>
+
+<!-- RESPONSABILITÉ -->
+<section class="section" id="responsabilite">
+  <div class="sh"><div class="si si-red">⚖️</div><h2 class="st"><span>04.</span>Responsabilité</h2></div>
+  <div class="tl">
+    <div class="ti"><div class="td">LCEN — Art. 6, I, 1°</div><h4>Éditeur de contenu</h4><p>Responsabilité pleine et entière des contenus publiés — réponse civile et pénale de tout contenu illicite.</p></div>
+    <div class="ti"><div class="td">LCEN — Art. 6, I, 2° · Notice &amp; Take Down</div><h4>Hébergeur</h4><p>Responsabilité limitée : non responsable s'il n'avait pas connaissance du caractère illicite ou a agi promptement dès notification.</p></div>
+    <div class="ti"><div class="td">Règl. (UE) 2022/2065 — depuis 2024</div><h4>Digital Services Act (DSA)</h4><p>Modération des contenus, transparence algorithmique, supervision Commission européenne pour les très grandes plateformes (VLOP).</p></div>
+    <div class="ti"><div class="td">Code Civil — Art. 1240</div><h4>Responsabilité civile délictuelle</h4><p>Faute + dommage + lien de causalité. Engage l'éditeur pour tout préjudice causé par le site.</p></div>
+  </div>
+</section>
+
+<!-- CYBERSÉCURITÉ -->
+<section class="section" id="cybersecu">
+  <div class="sh"><div class="si si-purple">🛡️</div><h2 class="st"><span>05.</span>Cybersécurité</h2></div>
+  <div class="cg cg3">
+    <div class="card g"><h3>🔐 RGPD Art. 32</h3><ul><li>HTTPS / TLS obligatoire</li><li>Chiffrement au repos</li><li>Confidentialité, intégrité, disponibilité</li><li>Tests réguliers</li><li>Plan de continuité d'activité</li></ul></div>
+    <div class="card r"><h3>🚨 Infractions STAD</h3><ul><li class="hl2">323-1 : Accès frauduleux → 2 ans / 60k€</li><li class="hl2">323-2 : DDoS → 5 ans / 150k€</li><li>323-3 : Introduction de données</li><li>323-3-1 : Outils de piratage</li></ul></div>
+    <div class="card b"><h3>✅ Bonnes pratiques</h3><ul><li>HTTPS + certificat TLS valide</li><li>Mots de passe hachés (bcrypt)</li><li>Sauvegardes testées</li><li>En-têtes HTTP (CSP, HSTS)</li><li>Mises à jour automatisées</li></ul></div>
+  </div>
+</section>
+
+<!-- SANCTIONS -->
+<section class="section" id="sanctions">
+  <div class="sh"><div class="si si-red">⚡</div><h2 class="st"><span>06.</span>Tableau des Sanctions</h2></div>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Infraction</th><th>Texte</th><th>Sanction pénale</th><th>Civil / Admin.</th><th>Niveau</th></tr></thead>
+      <tbody>
+        <tr><td>Contrefaçon</td><td>CPI L.335-2</td><td>3 ans / 300 000 €</td><td>Dommages-intérêts</td><td><span class="badge br">Élevé</span></td></tr>
+        <tr><td>Violation RGPD grave</td><td>Art. 83 §5</td><td>—</td><td>20 M€ ou 4% CA</td><td><span class="badge br">Élevé</span></td></tr>
+        <tr><td>Violation RGPD mineure</td><td>Art. 83 §4</td><td>—</td><td>10 M€ ou 2% CA</td><td><span class="badge bo">Moyen</span></td></tr>
+        <tr><td>Absence mentions légales</td><td>LCEN art. 6</td><td>Contravention</td><td>75 000 €</td><td><span class="badge bo">Moyen</span></td></tr>
+        <tr><td>Accès frauduleux STAD</td><td>CP art. 323-1</td><td>2 ans / 60 000 €</td><td>Dommages-intérêts</td><td><span class="badge br">Élevé</span></td></tr>
+        <tr><td>Entrave STAD (DDoS)</td><td>CP art. 323-2</td><td>5 ans / 150 000 €</td><td>Dommages-intérêts</td><td><span class="badge br">Élevé</span></td></tr>
+        <tr><td>Non-notification violation</td><td>RGPD art. 33</td><td>—</td><td>Amende CNIL</td><td><span class="badge bo">Moyen</span></td></tr>
+        <tr><td>Cookies sans consentement</td><td>ePrivacy</td><td>—</td><td>Injonction + amende</td><td><span class="badge bb">Faible</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section class="section" id="checklist">
+  <div class="sh"><div class="si si-green">✅</div><h2 class="st"><span>07.</span>Checklist Conformité</h2></div>
+  <div class="cg cg2">
+    <div class="card g"><h3>📝 Droits &amp; Contenus</h3><div class="cl">
+      <div class="ci"><span class="cd dreq">!</span>Droits acquis pour images/textes tiers</div>
+      <div class="ci"><span class="cd dok">✓</span>Mention © visible</div>
+      <div class="ci"><span class="cd dwn">i</span>Licences polices/icônes vérifiées</div>
+    </div></div>
+    <div class="card b"><h3>🔐 RGPD</h3><div class="cl">
+      <div class="ci"><span class="cd dreq">!</span>Registre des traitements à jour</div>
+      <div class="ci"><span class="cd dreq">!</span>Politique de confidentialité accessible</div>
+      <div class="ci"><span class="cd dreq">!</span>Bandeau cookies conforme</div>
+      <div class="ci"><span class="cd dok">✓</span>Procédure exercice des droits</div>
+    </div></div>
+    <div class="card y"><h3>📋 Mentions &amp; CGU</h3><div class="cl">
+      <div class="ci"><span class="cd dreq">!</span>Page mentions légales complète</div>
+      <div class="ci"><span class="cd dok">✓</span>CGU rédigées et accessibles</div>
+      <div class="ci"><span class="cd dwn">i</span>Date de mise à jour mentionnée</div>
+    </div></div>
+    <div class="card r"><h3>🛡️ Sécurité</h3><div class="cl">
+      <div class="ci"><span class="cd dreq">!</span>HTTPS avec TLS valide</div>
+      <div class="ci"><span class="cd dok">✓</span>Sauvegardes régulières testées</div>
+      <div class="ci"><span class="cd dwn">i</span>Plan de notification violation défini</div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ══ FLASHCARDS ══ -->
+<section class="section" id="flashcards">
+  <div class="sh"><div class="si si-green">⚡</div><h2 class="st"><span>10.</span>Flashcards <small>+5 XP / carte maîtrisée</small></h2></div>
+  <p style="font-size:.82rem;color:var(--muted);margin-bottom:18px;">Clic ou espace pour retourner · ← → pour naviguer · Évaluez votre maîtrise</p>
+  <div class="fc-arena">
+    <div class="fc-topbar">
+      <div class="fc-count">Carte <b id="fccurr">1</b> / <b id="fctot">20</b></div>
+      <div class="fc-mastered-badge">⭐ <span id="fcmastered">0</span> maîtrisées</div>
+    </div>
+    <div class="fc-persp">
+      <div class="fc-card-wrap" id="fccard" onclick="flipFC()">
+        <div class="fc-inner" id="fcinner">
+          <div class="fc-face fc-front">
+            <div class="fc-tag" id="fctag">RGPD</div>
+            <div class="fc-q" id="fcq">Chargement…</div>
+            <div class="fc-hint">Clic · Espace pour retourner</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-tag back">Réponse</div>
+            <div class="fc-ans" id="fca"></div>
+            <div class="fc-ref" id="fcref"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-rating" id="fcrating" style="display:none;">
+      <button class="fcbtn again" onclick="rateFC(0)">😬 À revoir</button>
+      <button class="fcbtn good" onclick="rateFC(1)">🤔 À consolider</button>
+      <button class="fcbtn perfect" onclick="rateFC(2)">🔥 Maîtrisé ! +5 XP</button>
+    </div>
+    <div class="fc-nav" style="margin-top:12px;">
+      <button class="nbtn" onclick="prevFC()">← Préc.</button>
+      <div class="fc-dots" id="fcdots"></div>
+      <button class="nbtn" onclick="nextFC()">Suiv. →</button>
+    </div>
+    <div class="fc-prog">
+      <div class="fc-ptrack"><div class="fc-pfill" id="fcpfill"></div></div>
+      <div class="fc-ptxt" id="fcptxt">0%</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ QCM ══ -->
+<section class="section" id="quiz">
+  <div class="sh"><div class="si si-orange">🎯</div><h2 class="st"><span>11.</span>QCM — 25 Questions <small>+10 XP / bonne réponse</small></h2></div>
+  <div class="qa">
+    <div class="qcats">
+      <button class="qcat on" onclick="filterQ('all',this)">Tout (50)</button>
+      <button class="qcat" onclick="filterQ('cejm',this)">📚 Mon cours</button>
+      <button class="qcat" onclick="filterQ('droits',this)">📝 Droits d'auteur</button>
+      <button class="qcat" onclick="filterQ('rgpd',this)">🔐 RGPD</button>
+      <button class="qcat" onclick="filterQ('lcen',this)">⚖️ LCEN</button>
+      <button class="qcat" onclick="filterQ('penal',this)">🚨 Pénal</button>
+    </div>
+    <div class="qprog"><div class="qpfill" id="qpfill" style="width:0%"></div></div>
+
+    
+    <div class="qblock on" data-q="0" data-cat="cejm"><div class="qnum">Question 1 / 50 · Mon cours</div><div class="qtext">Quelles sont les spécificités d'un contrat de vente à distance ?</div><div class="qopts"><button class="qopt" data-correct="true"><span class="qopt-letter">A</span>Conclut par Internet, téléphone, correspondance</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Conclut par E-mail uniquement</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Conclut par message SMS, téléphone, E-mail</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Signé obligatoirement en présence physique</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="1" data-cat="cejm"><div class="qnum">Question 2 / 50 · Mon cours</div><div class="qtext">Quelle organisation protège les marques en France selon la règle du premier arrivé premier servi ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>AFNIC</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>INPI (Institut National de la Propriété Intellectuelle)</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>ONPI</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>CNIL</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="2" data-cat="cejm"><div class="qnum">Question 3 / 50 · Mon cours</div><div class="qtext">Que doit fournir le vendeur à l'acheteur en ligne ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Informations contractuelles</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Informations précontractuelles</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Informations personnelles</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Informations financières</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="3" data-cat="cejm"><div class="qnum">Question 4 / 50 · Mon cours</div><div class="qtext">Quelles sont les informations précontractuelles obligatoires du vendeur en ligne ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Identité, coordonnées, caractéristique du produit, prix</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Identité, coordonnées, condition de livraison, garantie, prix</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Identité, coordonnées, caractéristique du produit, prix, conditions de livraison, garantie de vente</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Uniquement le prix et les conditions de vente</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="4" data-cat="cejm"><div class="qnum">Question 5 / 50 · Mon cours</div><div class="qtext">Par quel moyen sont protégés les sites Internet ?</div><div class="qopts"><button class="qopt" data-correct="true"><span class="qopt-letter">A</span>Par le droit d'auteur</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Par un brevet</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Par le droit du producteur</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Par une marque déposée</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="5" data-cat="cejm"><div class="qnum">Question 6 / 50 · Mon cours</div><div class="qtext">Qui est considéré comme le producteur d'une base de données ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>La personne qui prend l'initiative de la créer</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>La personne qui prend l'initiative et le risque des investissements financiers substantiels</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>La personne qui crée un site web</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>L'hébergeur qui stocke la base de données</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="6" data-cat="cejm"><div class="qnum">Question 7 / 50 · Mon cours</div><div class="qtext">Par quels moyens les bases de données sont-elles protégées ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Par un brevet</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Par le droit du producteur</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Par le droit du constructeur</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Par le RGPD uniquement</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="7" data-cat="droits"><div class="qnum">Question 8 / 50 · Droits d'auteur</div><div class="qtext">Quelle est la durée de protection des droits patrimoniaux de l'auteur ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>50 ans post mortem</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>70 ans post mortem</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>80 ans post mortem</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Illimitée</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="8" data-cat="droits"><div class="qnum">Question 9 / 50 · Droits d'auteur</div><div class="qtext">Lequel de ces éléments n'est PAS protégeable par le droit d'auteur ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Code source d'un site web</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Photographie originale</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Une idée ou un concept</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Interface graphique originale</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="9" data-cat="droits"><div class="qnum">Question 10 / 50 · Droits d'auteur</div><div class="qtext">Le droit de paternité est un droit :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Patrimonial, cessible à un tiers</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Moral, inaliénable et imprescriptible</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Contractuel</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Administratif</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="10" data-cat="droits"><div class="qnum">Question 11 / 50 · Droits d'auteur</div><div class="qtext">Le droit sui generis protège les bases de données pendant :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>5 ans</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>15 ans</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>25 ans</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>70 ans post mortem</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="11" data-cat="droits"><div class="qnum">Question 12 / 50 · Droits d'auteur</div><div class="qtext">Quel texte consacre le droit d'auteur sans formalité d'enregistrement ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>RGPD art. 4</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>LCEN art. 6</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>CPI art. L.111-1</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Code civil art. 1240</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="12" data-cat="droits"><div class="qnum">Question 13 / 50 · Droits d'auteur</div><div class="qtext">Les droits moraux de l'auteur sont :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Cessibles à un employeur</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Limités à la vie de l'auteur</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Perpétuels, inaliénables et imprescriptibles</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Transférés avec les droits patrimoniaux</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="13" data-cat="droits"><div class="qnum">Question 14 / 50 · Droits d'auteur</div><div class="qtext">Pourquoi une URL n'est-elle pas protégée par le droit d'auteur ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Elle est trop courte</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Elle est accessible librement</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Elle ne présente pas le critère d'originalité</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Elle relève uniquement du droit des marques</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="14" data-cat="droits"><div class="qnum">Question 15 / 50 · Droits d'auteur</div><div class="qtext">La contrefaçon d'une œuvre (CPI art. L.335-2) est punie de :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>1 an et 15 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>2 ans et 150 000 €</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>3 ans et 300 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>5 ans et 500 000 €</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="15" data-cat="rgpd"><div class="qnum">Question 16 / 50 · RGPD</div><div class="qtext">Quel est le délai maximal pour notifier une violation de données à la CNIL ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>24 heures</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>72 heures</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>1 semaine</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>30 jours</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="16" data-cat="rgpd"><div class="qnum">Question 17 / 50 · RGPD</div><div class="qtext">L'amende RGPD maximale pour violation grave est :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>1 M€ ou 1% CA</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>10 M€ ou 2% CA</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>20 M€ ou 4% CA mondial</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>50 M€ ou 10% CA</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="17" data-cat="rgpd"><div class="qnum">Question 18 / 50 · RGPD</div><div class="qtext">Le consentement aux cookies doit être renouvelé au maximum tous les :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>6 mois</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>13 mois</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>24 mois</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Il n'expire jamais</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="18" data-cat="rgpd"><div class="qnum">Question 19 / 50 · RGPD</div><div class="qtext">Parmi les bases légales du RGPD, laquelle nécessite une démarche active de l'utilisateur ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>L'intérêt légitime</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Le consentement explicite</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>L'obligation légale</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>L'exécution d'un contrat</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="19" data-cat="rgpd"><div class="qnum">Question 20 / 50 · RGPD</div><div class="qtext">Quel article du RGPD consacre le droit à l'effacement ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Article 13</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Article 15</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Article 17</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Article 21</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="20" data-cat="rgpd"><div class="qnum">Question 21 / 50 · RGPD</div><div class="qtext">Qu'est-ce que le Privacy by Default (art. 25 RGPD) ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Effacement des données après 6 mois</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Refus explicite de tout traitement</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Paramètres de protection les plus élevés actifs par défaut</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Déclaration obligatoire à la CNIL</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="21" data-cat="rgpd"><div class="qnum">Question 22 / 50 · RGPD</div><div class="qtext">Dans quel cas la désignation d'un DPO est-elle obligatoire ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Pour tout site collectant des e-mails</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Pour toute entreprise de plus de 10 salariés</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Pour les autorités publiques et organismes traitant à grande échelle des données sensibles</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Pour tout site avec cookies analytiques</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="22" data-cat="rgpd"><div class="qnum">Question 23 / 50 · RGPD</div><div class="qtext">Qu'est-ce qu'une DPIA ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Un audit annuel par la CNIL</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Une analyse d'impact interne avant traitements risqués</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Un rapport à la Commission européenne</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Un test de pénétration obligatoire</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="23" data-cat="rgpd"><div class="qnum">Question 24 / 50 · RGPD</div><div class="qtext">Quelle affirmation sur le consentement RGPD est FAUSSE ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Il doit être libre, spécifique, éclairé et univoque</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Le retrait doit être aussi simple que l'octroi</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Une case pré-cochée constitue un consentement valide</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Le silence ne vaut pas consentement</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="24" data-cat="rgpd"><div class="qnum">Question 25 / 50 · RGPD</div><div class="qtext">Combien de principes fondamentaux le RGPD prévoit-il à l'article 5 ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>4</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>5</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>6</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>8</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="25" data-cat="lcen"><div class="qnum">Question 26 / 50 · LCEN</div><div class="qtext">Quelle loi régit les mentions légales obligatoires des sites web en France ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Loi Informatique et Libertés</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Code de la Propriété Intellectuelle</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>LCEN — Loi pour la Confiance dans l'Économie Numérique</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Code de la Consommation</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="26" data-cat="lcen"><div class="qnum">Question 27 / 50 · LCEN</div><div class="qtext">L'amende maximale pour absence de mentions légales est :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>15 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>45 000 €</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>75 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>300 000 €</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="27" data-cat="lcen"><div class="qnum">Question 28 / 50 · LCEN</div><div class="qtext">Selon la LCEN, l'hébergeur engage sa responsabilité :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Toujours pour tout contenu illicite</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Jamais, il est totalement exonéré</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>S'il avait connaissance du caractère illicite et n'a pas agi promptement</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Uniquement pour les contenus audiovisuels</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="28" data-cat="lcen"><div class="qnum">Question 29 / 50 · LCEN</div><div class="qtext">Qu'est-ce que le mécanisme « notice and take down » ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>L'obligation pour l'éditeur de publier des avis</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>L'hébergeur doit retirer un contenu illicite dès notification</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>La procédure de déréférencement judiciaire</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>L'obligation d'afficher un bandeau de cookies</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="29" data-cat="lcen"><div class="qnum">Question 30 / 50 · LCEN</div><div class="qtext">En e-commerce, quel est le délai légal de rétractation du consommateur ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>7 jours</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>14 jours</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>30 jours</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>60 jours</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="30" data-cat="lcen"><div class="qnum">Question 31 / 50 · LCEN</div><div class="qtext">Quelle est la différence principale entre éditeur et hébergeur ?</div><div class="qopts"><button class="qopt" data-correct="true"><span class="qopt-letter">A</span>L'éditeur est responsable, l'hébergeur a responsabilité limitée</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Ils ont exactement le même régime</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>L'hébergeur est plus responsable</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Seul l'hébergeur peut être poursuivi</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="31" data-cat="lcen"><div class="qnum">Question 32 / 50 · LCEN</div><div class="qtext">Le Digital Services Act (DSA) s'applique depuis :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>2018</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>2020</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>2022</button><button class="qopt" data-correct="true"><span class="qopt-letter">D</span>2024</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="32" data-cat="penal"><div class="qnum">Question 33 / 50 · Pénal</div><div class="qtext">L'article 323-1 du Code pénal réprime :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Le non-respect du RGPD</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>La contrefaçon de logiciel</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>L'accès frauduleux à un STAD</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>La diffamation en ligne</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="33" data-cat="penal"><div class="qnum">Question 34 / 50 · Pénal</div><div class="qtext">Quelle peine pour une attaque DDoS (art. 323-2 CP) ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>1 an et 15 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>2 ans et 60 000 €</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>5 ans et 150 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>10 ans et 300 000 €</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="34" data-cat="penal"><div class="qnum">Question 35 / 50 · Pénal</div><div class="qtext">La responsabilité civile délictuelle (art. 1240 C. civ.) exige :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Seulement une faute</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Faute + dommage + lien de causalité</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Seulement un dommage</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Un contrat préalable</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="35" data-cat="penal"><div class="qnum">Question 36 / 50 · Pénal</div><div class="qtext">Quel texte européen de 2022 renforce la cybersécurité des entités essentielles ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>DSA</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>DMA</button><button class="qopt" data-correct="true"><span class="qopt-letter">C</span>Directive NIS2</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Règlement eIDAS 2</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="36" data-cat="penal"><div class="qnum">Question 37 / 50 · Pénal</div><div class="qtext">L'article 323-3-1 du Code pénal réprime :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Le vol de données</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>La détention ou fourniture d'outils de piratage</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>La diffusion de fausses nouvelles</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>L'usurpation d'identité numérique</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="37" data-cat="penal"><div class="qnum">Question 38 / 50 · Pénal</div><div class="qtext">En droit pénal numérique, STAD signifie :</div><div class="qopts"><button class="qopt" data-correct="true"><span class="qopt-letter">A</span>Système de Traitement Automatisé de Données</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Service de Traitement des Actes Dématérialisés</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Système de Transmission des Actes Digitaux</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Structure de Traitement des Activités Dématérialisées</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="38" data-cat="penal"><div class="qnum">Question 39 / 50 · Pénal</div><div class="qtext">L'usurpation d'identité numérique est punie par :</div><div class="qopts"><button class="qopt" data-correct="true"><span class="qopt-letter">A</span>Art. 226-4-1 CP — 1 an / 15 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">B</span>Art. 323-1 CP — 2 ans / 60 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Art. 323-2 CP — 5 ans / 150 000 €</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Art. 226-1 CP — 3 ans / 45 000 €</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="39" data-cat="cejm"><div class="qnum">Question 40 / 50 · E-Commerce</div><div class="qtext">Le vendeur en ligne doit permettre au consommateur de corriger sa commande avant validation. C'est le principe :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Du droit de rétractation</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Du double clic</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>De la confirmation de commande</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>De la livraison conforme</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="40" data-cat="cejm"><div class="qnum">Question 41 / 50 · E-Commerce</div><div class="qtext">Quelles mentions doit obligatoirement contenir une facture électronique B2C ?</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Seulement le prix TTC</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Numéro de facture, date, identité parties, description, prix HT et TTC</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Uniquement les coordonnées du vendeur</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Le numéro SIRET suffit</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="41" data-cat="cejm"><div class="qnum">Question 42 / 50 · E-Commerce</div><div class="qtext">Le délai de livraison maximal en l'absence d'indication contractuelle est :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>7 jours</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>30 jours</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>60 jours</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>90 jours</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="42" data-cat="cejm"><div class="qnum">Question 43 / 50 · E-Commerce</div><div class="qtext">En cas de rétractation, le vendeur doit rembourser dans un délai de :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>7 jours</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>14 jours</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>30 jours</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>60 jours</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="43" data-cat="cejm"><div class="qnum">Question 44 / 50 · E-Commerce</div><div class="qtext">La garantie légale de conformité dure :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>1 an</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>2 ans</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>3 ans</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>5 ans</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="44" data-cat="cejm"><div class="qnum">Question 45 / 50 · E-Commerce</div><div class="qtext">Le paiement sécurisé en ligne repose principalement sur :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Le protocole HTTP</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Le protocole HTTPS et le chiffrement TLS</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Le pare-feu du navigateur</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Le certificat RGPD</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="45" data-cat="cejm"><div class="qnum">Question 46 / 50 · E-Commerce</div><div class="qtext">Les CGV (Conditions Générales de Vente) sont :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Obligatoires uniquement pour les grandes enseignes</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Obligatoires pour tout site e-commerce B2C</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Facultatives si le prix est affiché</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Réservées aux contrats B2B</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="46" data-cat="cejm"><div class="qnum">Question 47 / 50 · Marques & Domaine</div><div class="qtext">Un nom de domaine peut être protégé en tant que marque si :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Il est enregistré à l'AFNIC</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Il est distinctif et enregistré à l'INPI</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Il contient le mot .fr</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Il est utilisé depuis plus de 5 ans</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="47" data-cat="cejm"><div class="qnum">Question 48 / 50 · Marques & Domaine</div><div class="qtext">La durée de protection d'une marque déposée à l'INPI est :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>5 ans renouvelables</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>10 ans renouvelables indéfiniment</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>20 ans non renouvelables</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>70 ans post mortem</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="48" data-cat="cejm"><div class="qnum">Question 49 / 50 · Marques & Domaine</div><div class="qtext">Le cybersquatting consiste à :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Pirater un site web</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Enregistrer un nom de domaine reprenant une marque connue pour le revendre</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Copier le contenu d'un site concurrent</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Usurper une identité numérique</button></div><div class="qfb"></div></div>
+    <div class="qblock" data-q="49" data-cat="cejm"><div class="qnum">Question 50 / 50 · Marques & Domaine</div><div class="qtext">L'AFNIC est l'organisme chargé de :</div><div class="qopts"><button class="qopt" data-correct="false"><span class="qopt-letter">A</span>Déposer les marques françaises</button><button class="qopt" data-correct="true"><span class="qopt-letter">B</span>Gérer les noms de domaine en .fr</button><button class="qopt" data-correct="false"><span class="qopt-letter">C</span>Contrôler le respect du RGPD</button><button class="qopt" data-correct="false"><span class="qopt-letter">D</span>Réguler les plateformes numériques</button></div><div class="qfb"></div></div>
+
+    <div class="result-screen" id="resscreen">
+      <div class="rtrophy" id="rtrophy">🏆</div>
+      <div class="rscore">Score : <b id="resscore">—</b></div>
+      <div class="rmsg" id="resmsg"></div>
+      <div class="rxp">⚡ <span id="resxp">0</span> XP gagnés ce QCM !</div>
+    </div>
+
+    <div class="qnav">
+      <button class="btnext" id="qnext">Suivant →</button>
+      <button class="btrestart" id="qrestart" onclick="restartQ()">↺ Recommencer</button>
+      <div class="qscoretxt" id="qscoretxt">1 / 25</div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOSSAIRE -->
+<section class="section" id="glossaire">
+  <div class="sh"><div class="si si-blue">📖</div><h2 class="st"><span>12.</span>Glossaire</h2></div>
+  <div class="gg">
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">RGPD</span><span class="garrow">›</span></div><div class="gbody">Règlement (UE) 2016/679 applicable depuis mai 2018. Encadre la collecte et le traitement des données personnelles des résidents UE quelle que soit la localisation de l'organisme.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">LCEN</span><span class="garrow">›</span></div><div class="gbody">Loi pour la Confiance dans l'Économie Numérique (n° 2004-575 du 21 juin 2004). Définit les statuts d'éditeur et d'hébergeur, impose les mentions légales obligatoires.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">CNIL</span><span class="garrow">›</span></div><div class="gbody">Commission Nationale de l'Informatique et des Libertés. Autorité de contrôle française au sens du RGPD. Dispose d'un pouvoir de contrôle et de sanction administrative.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">Données personnelles</span><span class="garrow">›</span></div><div class="gbody">Toute information relative à une personne physique identifiée ou identifiable : nom, e-mail, IP, cookie, localisation… L'identifiabilité indirecte suffit à qualifier la donnée.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">DPO — Délégué à la Protection des Données</span><span class="garrow">›</span></div><div class="gbody">Responsable de la conformité RGPD. Désignation obligatoire pour les autorités publiques et organismes traitant à grande échelle des données sensibles (RGPD art. 37).</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">STAD</span><span class="garrow">›</span></div><div class="gbody">Système de Traitement Automatisé de Données. L'accès frauduleux est puni par les art. 323-1 et s. du Code pénal. Couvre serveurs, sites web, bases de données.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">Contrefaçon</span><span class="garrow">›</span></div><div class="gbody">Utilisation d'une œuvre protégée sans autorisation. CPI art. L.335-2 : jusqu'à 3 ans d'emprisonnement et 300 000 € d'amende.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">Privacy by Design / Default</span><span class="garrow">›</span></div><div class="gbody">RGPD art. 25 : intégrer la protection des données dès la conception (by design) et activer par défaut les paramètres les plus protecteurs (by default).</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">Droit sui generis — Bases de données</span><span class="garrow">›</span></div><div class="gbody">Protection de 15 ans accordée au producteur d'une base de données ayant nécessité un investissement substantiel, indépendamment de toute originalité (CPI art. L.341-1).</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">DPIA</span><span class="garrow">›</span></div><div class="gbody">Data Protection Impact Assessment — analyse d'impact interne obligatoire avant tout traitement à risque élevé (RGPD art. 35) : profilage, données biométriques, surveillance systématique, etc.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">DSA — Digital Services Act</span><span class="garrow">›</span></div><div class="gbody">Règlement (UE) 2022/2065 en vigueur depuis 2024. Régule les plateformes numériques : modération, transparence algorithmique, droits des utilisateurs. Supervision des VLOP par la Commission européenne.</div></div>
+    <div class="gi" onclick="toggleGloss(this)"><div class="ghead"><span class="gterm">Consentement RGPD</span><span class="garrow">›</span></div><div class="gbody">Manifestation de volonté libre, spécifique, éclairée et univoque. Le consentement doit être aussi facile à retirer qu'à donner. Le silence, les cases pré-cochées ou l'inaction ne constituent pas un consentement valable.</div></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <p>⚡ <b>LexQuest</b> · Protection du site web — Droit français</p>
+  <p style="margin-top:5px;">RGPD · LCEN · CPI · Code pénal · DSA · NIS2</p>
+  <p style="margin-top:5px;opacity:.4;">Document pédagogique — non contractuel</p>
+</footer>
+
+<script>
+// ═══════════════════════ GAMIFICATION ═══════════════════════
+let xp=0,streak=0,level=1;
+const XP_LEVELS=[0,100,250,450,700,1000];
+const LVL_NAMES=['Novice','Apprenti','Juriste','Expert','Maître du droit'];
+
+function addXP(amount,clientX,clientY){
+  xp+=amount; streak++;
+  const pop=document.createElement('div');
+  pop.className='xp-popup';
+  pop.textContent='+'+amount+' XP';
+  pop.style.cssText='left:'+(clientX-20)+'px;top:'+(clientY-40)+'px;';
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),1000);
+  const nxt=XP_LEVELS[level]||9999;
+  if(xp>=nxt&&level<5){level++;showLvlUp();}
+  updateHUD();
+}
+
+function showLvlUp(){
+  spawnConfetti();
+  const pop=document.createElement('div');
+  pop.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:linear-gradient(135deg,#4fffb0,#00d4ff);color:#0d0f1a;padding:22px 38px;border-radius:18px;font-family:Syne,sans-serif;font-size:1.3rem;font-weight:800;z-index:9999;animation:popIn .4s ease;text-align:center;box-shadow:0 20px 60px rgba(78,255,176,.4);';
+  pop.innerHTML='⭐ Niveau '+level+'!<br><span style="font-size:.8rem;font-weight:400;">'+LVL_NAMES[level-1]+'</span>';
+  document.body.appendChild(pop);
+  setTimeout(()=>pop.remove(),2200);
+}
+
+function spawnConfetti(){
+  const cols=['#4fffb0','#00d4ff','#ffd166','#ff6b35','#a855f7','#f472b6'];
+  for(let i=0;i<28;i++){
+    setTimeout(()=>{
+      const c=document.createElement('div');
+      c.className='confetti-p';
+      c.style.cssText='left:'+Math.random()*100+'vw;top:0;background:'+cols[Math.floor(Math.random()*cols.length)]+';animation-duration:'+(1+Math.random()*.8)+'s;animation-delay:'+Math.random()*.4+'s;transform:rotate('+Math.random()*360+'deg);';
+      document.body.appendChild(c);
+      setTimeout(()=>c.remove(),2200);
+    },i*35);
+  }
+}
+
+function updateHUD(){
+  ['hxp','hudxp'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=xp;});
+  ['hstreak','hudstreak'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=streak;});
+  ['hlevel','hudlevel'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=level;});
+  const cur=XP_LEVELS[level-1]||0,nxt=XP_LEVELS[level]||xp+1;
+  const pct=Math.min(100,((xp-cur)/(nxt-cur))*100);
+  const b=document.getElementById('hbar');if(b)b.style.width=pct+'%';
+  const t=document.getElementById('xptxt');if(t)t.innerHTML=xp+' / '+nxt+' XP';
+}
+
+// ═══════════════════════ SCROLL REVEAL ═══════════════════════
+const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.06});
+document.querySelectorAll('.section').forEach(s=>obs.observe(s));
+
+// ═══════════════════════ GLOSSAIRE ═══════════════════════
+function toggleGloss(el){el.classList.toggle('open');}
+
+// ═══════════════════════ FLASHCARDS ═══════════════════════
+const fcData=[
+  {tag:'RGPD',q:"Quel est le délai de notification d'une violation de données à la CNIL ?",a:"72 heures après avoir pris connaissance de la violation.",ref:"RGPD — Art. 33"},
+  {tag:'RGPD',q:"Quels sont les 6 principes fondamentaux du RGPD ?",a:"Licéité/loyauté/transparence · Limitation des finalités · Minimisation · Exactitude · Limitation de conservation · Intégrité & confidentialité.",ref:"RGPD — Art. 5"},
+  {tag:'RGPD',q:"Quels droits le RGPD garantit-il aux personnes concernées ?",a:"Accès · Rectification · Effacement · Portabilité · Opposition · Limitation · Décision automatisée.",ref:"RGPD — Art. 15 à 22"},
+  {tag:'RGPD',q:"Quelles sont les 6 bases légales du RGPD pour un traitement ?",a:"Consentement · Contrat · Obligation légale · Intérêts vitaux · Intérêt public · Intérêt légitime.",ref:"RGPD — Art. 6"},
+  {tag:'RGPD',q:"Quel est le montant maximal des amendes RGPD pour violation grave ?",a:"20 millions € ou 4% du CA annuel mondial — le plus élevé des deux.",ref:"RGPD — Art. 83 §5"},
+  {tag:'Cookies',q:"Quelle est la durée maximale de validité du consentement aux cookies ?",a:"13 mois selon le référentiel CNIL 2023. Au-delà, nouveau consentement requis.",ref:"Référentiel CNIL 2023"},
+  {tag:'LCEN',q:"Quelles sont les mentions légales obligatoires pour une personne morale ?",a:"Dénomination, forme juridique, siège, RCS/SIRET, capital, TVA, directeur de publication, hébergeur.",ref:"LCEN — Art. 6 III"},
+  {tag:'LCEN',q:"Quelle sanction pour l'absence de mentions légales sur un site web ?",a:"Amende jusqu'à 75 000 € (375 000 € pour une personne morale).",ref:"LCEN — Art. 6 III"},
+  {tag:'LCEN',q:"Quelle est la différence de responsabilité entre éditeur et hébergeur ?",a:"L'éditeur est pleinement responsable de ses contenus. L'hébergeur a une responsabilité limitée (notice & take down).",ref:"LCEN — Art. 6 I"},
+  {tag:"Droits d'auteur",q:"Quelles sont les 4 composantes des droits moraux de l'auteur ?",a:"Divulgation · Paternité · Intégrité · Retrait ou repentir. Perpétuels et inaliénables.",ref:"CPI — Art. L.121-1 à L.121-9"},
+  {tag:"Droits d'auteur",q:"Quelle est la durée de protection des droits patrimoniaux ?",a:"Vie de l'auteur + 70 ans. L'œuvre tombe ensuite dans le domaine public.",ref:"CPI — Art. L.123-1"},
+  {tag:"Droits d'auteur",q:"Un code source de site web est-il protégé par le droit d'auteur ?",a:"Oui, dès lors qu'il présente un caractère original — assimilé à une œuvre de l'esprit.",ref:"CPI — Art. L.111-1"},
+  {tag:"Droits d'auteur",q:"Pourquoi les idées ne sont-elles pas protégées par le droit d'auteur ?",a:"La protection couvre uniquement la forme expressive — jamais l'idée elle-même (dichotomie idée/expression).",ref:"CPI — Jurisprudence"},
+  {tag:'Pénal',q:"Que réprime l'article 323-1 du Code pénal ?",a:"L'accès frauduleux à un STAD. Peine : 2 ans d'emprisonnement et 60 000 €.",ref:"Code pénal — Art. 323-1"},
+  {tag:'Pénal',q:"Quelle infraction couvre l'article 323-2 du Code pénal ?",a:"L'entrave au fonctionnement d'un STAD (ex. DDoS). Peine : 5 ans et 150 000 €.",ref:"Code pénal — Art. 323-2"},
+  {tag:'RGPD',q:"Qu'est-ce que le Privacy by Design et Privacy by Default ?",a:"By Design : intégrer la protection dès la conception. By Default : paramètres les plus protecteurs actifs par défaut.",ref:"RGPD — Art. 25"},
+  {tag:'RGPD',q:"Dans quels cas la réalisation d'une DPIA est-elle obligatoire ?",a:"Avant tout traitement à risque élevé : profilage à grande échelle, données biométriques, surveillance systématique.",ref:"RGPD — Art. 35"},
+  {tag:'DSA',q:"Quel est l'objet principal du Digital Services Act (DSA) ?",a:"Réguler les plateformes numériques : modération de contenus illicites, transparence algorithmique, droits des utilisateurs.",ref:"Règl. (UE) 2022/2065"},
+  {tag:"Droits d'auteur",q:"Qu'est-ce que le droit sui generis sur les bases de données ?",a:"Protection de 15 ans accordée au producteur d'une base ayant nécessité un investissement substantiel.",ref:"CPI — Art. L.341-1 et s."},
+  {tag:'Pénal',q:"Sur quelle base l'art. 1240 du Code civil engage-t-il la responsabilité de l'éditeur ?",a:"Responsabilité civile délictuelle : faute + dommage + lien de causalité.",ref:"Code civil — Art. 1240"},
+];
+
+let fcIdx=0,fcStatus=new Array(fcData.length).fill(null),fcFlipped=false;
+
+function renderFC(){
+  const d=fcData[fcIdx];
+  document.getElementById('fcq').textContent=d.q;
+  document.getElementById('fca').textContent=d.a;
+  document.getElementById('fcref').textContent=d.ref;
+  document.getElementById('fctag').textContent=d.tag;
+  document.getElementById('fccurr').textContent=fcIdx+1;
+  document.getElementById('fctot').textContent=fcData.length;
+  const inner=document.getElementById('fcinner');
+  inner.classList.remove('flipped');
+  fcFlipped=false;
+  document.getElementById('fcrating').style.display='none';
+  const done=fcStatus.filter(s=>s!==null).length;
+  const pct=Math.round(done/fcData.length*100);
+  document.getElementById('fcpfill').style.width=pct+'%';
+  document.getElementById('fcptxt').textContent=pct+'%';
+  document.getElementById('fcmastered').textContent=fcStatus.filter(s=>s===2).length;
+  const dots=document.getElementById('fcdots');
+  dots.innerHTML='';
+  fcData.forEach((_,i)=>{
+    const d=document.createElement('button');
+    d.className='mdot';
+    if(i===fcIdx)d.classList.add('curr');
+    else if(fcStatus[i]===2)d.classList.add('ok2');
+    else if(fcStatus[i]===1)d.classList.add('ok1');
+    else if(fcStatus[i]===0)d.classList.add('ok0');
+    d.onclick=()=>{fcIdx=i;renderFC();};
+    dots.appendChild(d);
+  });
+}
+
+function flipFC(){
+  const inner=document.getElementById('fcinner');
+  fcFlipped=!fcFlipped;
+  if(fcFlipped){inner.classList.add('flipped');document.getElementById('fcrating').style.display='flex';}
+  else{inner.classList.remove('flipped');document.getElementById('fcrating').style.display='none';}
+}
+
+function rateFC(r){
+  fcStatus[fcIdx]=r;
+  if(r===2){
+    const btn=document.querySelector('.fcbtn.perfect');
+    const rect=btn.getBoundingClientRect();
+    addXP(5,rect.left+rect.width/2,rect.top);
+  }
+  fcIdx=(fcIdx+1)%fcData.length;
+  renderFC();
+}
+
+function nextFC(){fcIdx=(fcIdx+1)%fcData.length;renderFC();}
+function prevFC(){fcIdx=(fcIdx-1+fcData.length)%fcData.length;renderFC();}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowRight')nextFC();
+  if(e.key==='ArrowLeft')prevFC();
+  if(e.key===' '){e.preventDefault();flipFC();}
+});
+
+renderFC();
+
+// ═══════════════════════ QCM ═══════════════════════
+const qFB=[
+  "Un contrat à distance se conclut sans présence physique simultanée — par Internet, téléphone ou correspondance (Code de la consommation art. L.221-1).",
+  "L'INPI (Institut National de la Propriété Intellectuelle) gère les dépôts de marques, brevets et dessins en France. Règle du premier arrivé premier servi.",
+  "Avant toute vente en ligne, le vendeur doit fournir des informations précontractuelles au consommateur (Code de la consommation art. L.221-5).",
+  "Les informations précontractuelles incluent : identité, coordonnées, caractéristiques du produit, prix, conditions de livraison et garantie (art. L.221-5 C. conso.).",
+  "Les sites Internet sont protégés par le droit d'auteur (CPI art. L.111-1) dès leur création, sans formalité. Le brevet protège les inventions techniques.",
+  "Le producteur est la personne qui prend l'initiative ET supporte le risque des investissements financiers substantiels (CPI art. L.341-1).",
+  "Les bases de données sont protégées par le droit sui generis du producteur — 15 ans pour celui qui a investi de manière substantielle.",
+  "CPI art. L.123-1 : protection vie de l'auteur + 70 ans post mortem. L'œuvre tombe ensuite dans le domaine public.",
+  "Le droit d'auteur protège la forme expressive, jamais l'idée elle-même (dichotomie idée/expression). Une idée est de libre parcours.",
+  "CPI art. L.121-1 : le droit de paternité est un droit moral — perpétuel, inaliénable et imprescriptible.",
+  "CPI art. L.341-1 : droit sui generis = 15 ans à compter de la mise à disposition de la base de données.",
+  "CPI art. L.111-1 : le droit d'auteur naît dès la création, sans formalité d'enregistrement.",
+  "CPI : les 4 droits moraux (divulgation, paternité, intégrité, retrait) sont perpétuels, inaliénables et imprescriptibles.",
+  "L'originalité est la condition de protection. Une URL est une adresse technique sans empreinte de la personnalité de l'auteur.",
+  "CPI art. L.335-2 : contrefaçon = jusqu'à 3 ans d'emprisonnement et 300 000 € d'amende.",
+  "RGPD art. 33 : notification à la CNIL dans les 72h après prise de connaissance d'une violation de données.",
+  "RGPD art. 83 §5 : 20 M€ ou 4% du CA annuel mondial — le montant le plus élevé est retenu.",
+  "Référentiel CNIL 2023 : durée max. du consentement aux cookies = 13 mois. Au-delà, nouveau consentement requis.",
+  "RGPD art. 4 §11 : le consentement doit être libre, spécifique, éclairé et univoque — action positive requise de l'utilisateur.",
+  "RGPD art. 17 : droit à l'effacement (droit à l'oubli). Conditions : données plus nécessaires, retrait consentement, opposition légitime…",
+  "RGPD art. 25 : Privacy by Default = les paramètres les plus protecteurs doivent être actifs par défaut, sans action de l'utilisateur.",
+  "RGPD art. 37 : DPO obligatoire pour autorités publiques et organismes traitant à grande échelle des données sensibles ou de profilage.",
+  "RGPD art. 35 : DPIA (analyse d'impact) obligatoire avant tout traitement à risque élevé : profilage, biométrie, surveillance systématique.",
+  "Une case pré-cochée n'est PAS un consentement valide. Le RGPD exige une manifestation de volonté active, libre et univoque.",
+  "RGPD art. 5 : 6 principes — licéité/loyauté/transparence, limitation des finalités, minimisation, exactitude, limitation conservation, intégrité.",
+  "LCEN (Loi n° 2004-575 du 21 juin 2004) : régit les mentions légales obligatoires pour tout éditeur de site accessible au public.",
+  "LCEN art. 6 III : amende jusqu'à 75 000 € pour une personne physique, 375 000 € pour une personne morale.",
+  "LCEN art. 6 I 2° : régime de responsabilité limitée de l'hébergeur — il doit agir promptement dès notification (notice and take down).",
+  "LCEN art. 6 I 2° : l'hébergeur doit retirer promptement tout contenu signalé comme manifestement illicite.",
+  "Code de la consommation art. L.221-18 : droit de rétractation = 14 jours calendaires pour les ventes en ligne B2C.",
+  "LCEN art. 6 : l'éditeur est pleinement responsable de ses contenus ; l'hébergeur bénéficie d'un régime de responsabilité atténuée.",
+  "Règlement (UE) 2022/2065 DSA : applicable aux très grandes plateformes depuis août 2023, généralisé en 2024.",
+  "Art. 323-1 CP : accès frauduleux à un STAD = 2 ans et 60 000 €. Aggravé si préjudice causé au système.",
+  "Art. 323-2 CP : entrave au fonctionnement d'un STAD (attaque DDoS, ransomware) = 5 ans et 150 000 €.",
+  "Art. 1240 C. civ. : responsabilité civile délictuelle requiert la réunion de 3 éléments : faute, dommage et lien de causalité.",
+  "Directive NIS2 (2022/2555) transposée en droit français — renforce les obligations de cybersécurité des entités essentielles et importantes.",
+  "Art. 323-3-1 CP : détention, fourniture ou diffusion d'outils permettant d'accéder frauduleusement à des systèmes informatiques.",
+  "STAD = Système de Traitement Automatisé de Données. Terme juridique clé pour qualifier les infractions informatiques en droit pénal français.",
+  "Art. 226-4-1 CP : usurpation d'identité numérique = 1 an d'emprisonnement et 15 000 € d'amende.",
+  "Le principe du double clic (ou double validation) impose au vendeur de permettre la vérification et correction avant validation définitive.",
+  "La facture électronique doit contenir : numéro, date, identité des parties, description des produits/services, prix HT et TTC (art. L.441-9 C. com.).",
+  "Code de la consommation art. L.216-1 : en l'absence de date convenue, livraison dans les 30 jours suivant la commande.",
+  "Art. L.242-4 C. conso. : remboursement sous 14 jours suivant la réception du retour ou de la preuve d'expédition.",
+  "Garantie légale de conformité : 2 ans à compter de la délivrance du bien (art. L.217-4 C. conso.), étendue à 5 ans pour les biens reconditionnés.",
+  "HTTPS (HyperText Transfer Protocol Secure) + TLS (Transport Layer Security) chiffrent les échanges et protègent les données de paiement.",
+  "Art. L.113-3 C. conso. : tout site e-commerce B2C doit disposer de CGV claires, accessibles avant la commande.",
+  "Un nom de domaine peut être protégé comme marque s'il est distinctif (ne désigne pas le produit/service) et enregistré à l'INPI.",
+  "Une marque INPI est protégée 10 ans à compter du dépôt, renouvelable indéfiniment par tranches de 10 ans.",
+  "Le cybersquatting (ou cyberpiratage de marque) consiste à enregistrer frauduleusement un nom de domaine similaire à une marque pour en tirer profit.",
+  "L'AFNIC (Association Française pour le Nommage Internet en Coopération) gère les extensions .fr, .re, .pm, .yt, .wf et .tf."
+];
+
+let qCurr=0,qScore=0,qAnswered=false,qActive=null;
+
+function getQBlocks(){return qActive||Array.from(document.querySelectorAll('.qblock'));}
+
+function updateQProg(){
+  const blocks=getQBlocks(),total=blocks.length;
+  document.getElementById('qpfill').style.width=(qCurr/total*100)+'%';
+  document.getElementById('qscoretxt').textContent=(qCurr+1)+' / '+total;
+}
+
+document.querySelectorAll('.qopt').forEach(btn=>{
+  btn.addEventListener('click',function(e){
+    if(qAnswered)return;
+    const block=this.closest('.qblock');
+    if(!block.classList.contains('on'))return;
+    qAnswered=true;
+    const isOk=this.dataset.correct==='true';
+    const fb=block.querySelector('.qfb');
+    const qIdx=parseInt(block.dataset.q);
+    block.querySelectorAll('.qopt').forEach(b=>{
+      b.disabled=true;
+      if(b.dataset.correct==='true')b.classList.add('correct');
+    });
+    if(isOk){
+      qScore++;
+      this.classList.add('correct');
+      fb.className='qfb show ok';
+      fb.innerHTML='✓ '+qFB[qIdx];
+      addXP(10,e.clientX,e.clientY-30);
+    } else {
+      this.classList.add('wrong');
+      fb.className='qfb show ko';
+      fb.innerHTML='✗ '+qFB[qIdx];
+      streak=0; updateHUD();
+    }
+    updateQProg();
+  });
+});
+
+document.getElementById('qnext').addEventListener('click',()=>{
+  const blocks=getQBlocks();
+  if(!qAnswered&&qCurr<blocks.length)return;
+  if(qCurr<blocks.length-1){
+    blocks[qCurr].classList.remove('on');
+    qCurr++;
+    blocks[qCurr].classList.add('on');
+    qAnswered=false;
+    updateQProg();
+  } else {
+    blocks[qCurr].classList.remove('on');
+    const total=blocks.length,pct=Math.round(qScore/total*100);
+    const emojis=pct<40?'😅':pct<60?'🤔':pct<80?'😎':'🏆';
+    const msgs=pct<40?'Des bases à consolider — relisez les fiches !':pct<60?'En bonne voie — continuez à réviser !':pct<80?'Bon niveau — quelques points à affiner !':'Excellent ! Vous maîtrisez le sujet !';
+    document.getElementById('rtrophy').textContent=emojis;
+    document.getElementById('resscore').innerHTML=qScore+' / '+total+' ('+pct+'%)';
+    document.getElementById('resmsg').textContent=msgs;
+    document.getElementById('resxp').textContent=qScore*10;
+    document.getElementById('resscreen').classList.add('show');
+    document.getElementById('qnext').style.display='none';
+    document.getElementById('qrestart').style.display='inline-block';
+    document.getElementById('qscoretxt').textContent='Score : '+qScore+' / '+total;
+    if(pct===100)spawnConfetti();
+  }
+});
+
+function filterQ(cat,btn){
+  document.querySelectorAll('.qcat').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  resetQ();
+  const all=Array.from(document.querySelectorAll('.qblock'));
+  all.forEach(b=>{b.classList.remove('on');b.style.display='';});
+  if(cat==='all'){qActive=null;all[0].classList.add('on');}
+  else{
+    const f=all.filter(b=>b.dataset.cat===cat);
+    all.forEach(b=>{if(b.dataset.cat!==cat)b.style.display='none';});
+    qActive=f; if(f.length)f[0].classList.add('on');
+  }
+  updateQProg();
+}
+
+function resetQ(){
+  qCurr=0;qScore=0;qAnswered=false;
+  document.querySelectorAll('.qopt').forEach(b=>{b.className='qopt';b.disabled=false;
+    const l=b.querySelector('.qopt-letter');if(l)b.className='qopt';});
+  document.querySelectorAll('.qfb').forEach(f=>{f.className='qfb';f.textContent='';});
+  document.getElementById('resscreen').classList.remove('show');
+  document.getElementById('qnext').style.display='inline-block';
+  document.getElementById('qrestart').style.display='none';
+}
+
+function restartQ(){
+  qActive=null; resetQ();
+  const all=Array.from(document.querySelectorAll('.qblock'));
+  all.forEach(b=>{b.classList.remove('on');b.style.display='';});
+  all[0].classList.add('on');
+  document.querySelectorAll('.qcat').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.qcat').classList.add('on');
+  updateQProg();
+}
+
+updateQProg(); updateHUD();
+</script>
+</body>
+</html>
